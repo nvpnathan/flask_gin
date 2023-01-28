@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Over</title>
+</head>
+<body>
+  <h1>Game Over</h1>
+  <p>Winner: {{ winner }}, Score: {{ score }}, Hands Won: {{ hands_won }}, Gin: {{ num_gins }}</p>
+    <form action="{{ url_for('new_game') }}" method="post">
+        {% for i in range(3) %}
+        <label for="player{{ i+1 }}">Player {{ i+1 }}:</label>
+        <input type="text" id="player{{ i+1 }}" name="player{{ i+1 }}">
+        {% endfor %}
+        <input type="submit" value="Start New Game">
+    </form>
+</body>
+</html>

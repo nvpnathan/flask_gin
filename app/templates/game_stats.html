@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>pyGIN - Game Stats</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+</head>
+<body>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <h1>Game Stats</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Games Won</th>
+                <th>Total Points</th>
+                <th>Total Hands Won</th>
+                <th>Total Gins</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+                {% for player in session['players'] %}
+                    <tr>
+                        <td>{{ player.name }}</td>
+                        <td>{{ player.games_won }}</td>
+                        <td>{{ player.total_points }}</td>
+                        <td>{{ player.total_hands_won }}</td>
+                        <td>{{ player.total_num_gins }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Back to scoreboard</a>
+</body>
+</html>

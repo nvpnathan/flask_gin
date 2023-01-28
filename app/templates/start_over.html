@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Game</title>
+</head>
+<body>
+  <h1>New Game!</h1>
+    <form action="{{ url_for('new_game') }}" method="post">
+        {% for i in range(3) %}
+        <label for="player{{ i+1 }}">Player {{ i+1 }}:</label>
+        <input type="text" id="player{{ i+1 }}" name="player{{ i+1 }}">
+        {% endfor %}
+        <input type="submit" value="Start New Game">
+    </form>
+</body>
+</html>
