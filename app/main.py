@@ -83,30 +83,29 @@ def game_over():
                            num_gins=num_gins, num_undercuts=num_undercuts)
 
 
-@app.route('/start_over', methods=['POST'])
+@app.route('/start_over', methods=['GET', 'POST'])
 def start_over():
     session.clear()
     return render_template('start_over.html')
 
 
-@app.route('/game_stats', methods=['POST'])
+@app.route('/game_stats', methods=['GET'])
 def game_stats():
-    # retrieve data for all sessions from the database
-    sessions = retrieve_sessions_from_db()
-    # initialize variables to keep track of overall statistics
-    games_won = 0
-    total_points = 0
-    total_hands_won = 0
-    total_num_gins = 0
-    # iterate through sessions to calculate overall statistics
-    for session in sessions:
-        for player in session['players']:
-            if player.score >= 100:
-                games_won += 1
-            total_points += player.score
-            total_hands_won += player.hands_won
-            total_num_gins += player.num_gins
-    return render_template('game_stats.html', sessions=sessions)
+    # Establish a connection to the database
+    conn = get_db_conn()
+    # Create a cursor to execute SQL statements
+    cursor = conn.cursor()
+    # Execute a SELECT statement to retrieve all rows from the winner table
+    cursor.execute("SELECT * FROM winner")
+    # Fetch the result of the query
+    winners = cursor.fetchall()
+    # Close the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    # Render the game_stats.html template, passing the winners to the template
+    return render_template('game_stats.html', winners=winners)
+
 
 
 if __name__ == '__main__':
