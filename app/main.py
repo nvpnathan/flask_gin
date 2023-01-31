@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def get_db_conn():
     conn = psycopg2.connect(
             host=os.environ['POSTGRES_SERVER'],
@@ -46,7 +47,8 @@ def update_score():
             session.modified = True
             if player['score'] >= 200:
                 return redirect(url_for('game_over', winner=player['name'], score=player['score'],
-                                        hands_won=player['hands_won'], num_gins=player['num_gins']))
+                                        hands_won=player['hands_won'], num_gins=player['num_gins'],
+                                        num_undercuts=player['num_undercuts']))
     return redirect(url_for('home'))
 
 
@@ -77,7 +79,8 @@ def game_over():
     # Close the connection
     cursor.close()
     conn.close()
-    return render_template('game_over.html', winner=winner, score=score, hands_won=hands_won, num_gins=num_gins)
+    return render_template('game_over.html', winner=winner, score=score, hands_won=hands_won,
+                           num_gins=num_gins, num_undercuts=num_undercuts)
 
 
 @app.route('/start_over', methods=['POST'])
