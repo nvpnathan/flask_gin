@@ -14,6 +14,7 @@
                 <th>Score</th>
                 <th>Hands Won</th>
                 <th>Gins</th>
+                <th>Undercuts</th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +24,7 @@
                 <td>{{ player.score }}</td>
                 <td>{{ player.hands_won }}</td>
                 <td>{{ player.num_gins }}</td>
+                <td>{{ player.num_undercuts }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -36,8 +38,10 @@
         </select>
         <label for="points">Points:</label>
         <input type="number" id="points" name="points" min="1" value="1">
-        <label for="bonus_points">GIN? 25 Bonus Points:</label>
-        <input type="checkbox" id="bonus_points" name="bonus_points">
+        <label for="gin_points">GIN? 25 Bonus Points:</label>
+        <input type="checkbox" id="gin_points" name="gin_points">
+        <label for="undercut_points">Undercut? 25 Bonus Points:</label>
+        <input type="checkbox" id="undercut_points" name="undercut_points">
         <input type="submit" value="Update Score">
     </form>
     <form action="{{ url_for('start_over') }}" method="post">

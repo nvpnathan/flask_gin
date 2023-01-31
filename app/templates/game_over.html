@@ -6,7 +6,7 @@
 </head>
 <body>
   <h1>Game Over</h1>
-  <p>Winner: {{ winner }}, Score: {{ score }}, Hands Won: {{ hands_won }}, Gin: {{ num_gins }}</p>
+  <p>Winner: {{ winner }}, Score: {{ score }}, Hands Won: {{ hands_won }}, Gin: {{ num_gins }}, Undercuts: {{ num_undercuts }}</p>
     <form action="{{ url_for('new_game') }}" method="post">
         {% for i in range(3) %}
         <label for="player{{ i+1 }}">Player {{ i+1 }}:</label>

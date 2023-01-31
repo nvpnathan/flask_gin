@@ -1,23 +1,29 @@
 import os
 import psycopg2
 from flask import Flask, render_template, request, redirect, session, url_for
+from dotenv import load_dotenv
 
-conn = psycopg2.connect(
-        host="localhost",
-        database="gin_db",
-        user=os.environ['DB_USERNAME'],
-        password=os.environ['DB_PASSWORD'])
+load_dotenv()
+
+def get_db_conn():
+    conn = psycopg2.connect(
+            host=os.environ['POSTGRES_SERVER'],
+            database=os.environ['POSTGRES_DB'],
+            user=os.environ['POSTGRES_USER'],
+            password=os.environ['POSTGRES_PASSWORD'])
+    return conn
 
 
 app = Flask(__name__)
-app.secret_key = 'mysecretkey'  # set a secret key for session
+app.secret_key = os.environ['SECRET_KEY']  # set a secret key for session
 
 
 @app.route('/')
 def home():
     if 'players' not in session:
-        session['players'] = [{'name': 'player 1', 'score': 0, 'hands_won': 0, 'num_gins': 0},
-                              {'name': 'player 2', 'score': 0, 'hands_won': 0, 'num_gins': 0}]
+        return render_template('start_over.html')
+        # session['players'] = [{'name': 'player 1', 'score': 0, 'hands_won': 0, 'num_gins': 0},
+          #                    {'name': 'player 2', 'score': 0, 'hands_won': 0, 'num_gins': 0}]
     return render_template('index.html', players=session['players'])
 
 
@@ -25,13 +31,17 @@ def home():
 def update_score():
     winner = request.form['winner']
     points = int(request.form['points'])
-    bonus_points = request.form.get('bonus_points')
+    gin_points = request.form.get('gin_points')
+    undercut_points = request.form.get('undercut_points')
     for player in session['players']:
         if player['name'] == winner:
             player['score'] += points
-            if bonus_points:
+            if gin_points:
                 player['score'] += 25
                 player['num_gins'] += 1
+            if undercut_points:
+                player['score'] += 25
+                player['num_undercuts'] += 1
             player['hands_won'] += 1
             session.modified = True
             if player['score'] >= 200:
@@ -46,7 +56,7 @@ def new_game():
     session['players'] = []
     for i in range(3):
         player_name = request.form['player' + str(i + 1)]
-        session['players'].append({'name': player_name, 'score': 0, 'hands_won': 0, 'num_gins': 0})
+        session['players'].append({'name': player_name, 'score': 0, 'hands_won': 0, 'num_gins': 0, 'num_undercuts': 0})
     return redirect(url_for('home'))
 
 
@@ -56,9 +66,12 @@ def game_over():
     score = request.args.get('score')
     hands_won = request.args.get('hands_won')
     num_gins = request.args.get('num_gins')
+    num_undercuts = request.args.get('num_undercuts')
     # use the conn variable to execute queries
+    conn = get_db_conn()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO sessions (winner, score, hands_won, num_gins) VALUES (%s, %s, %s, %s)", (winner, score, hands_won, num_gins))
+    cursor.execute("INSERT INTO winner (name, score, hands_won, num_gins, num_undercuts) VALUES (%s, %s, %s, %s, %s)",
+                   (winner, score, hands_won, num_gins, num_undercuts))
     conn.commit()
 
     # Close the connection
