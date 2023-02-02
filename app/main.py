@@ -91,18 +91,18 @@ def start_over():
 
 @app.route('/game_stats', methods=['GET'])
 def game_stats():
+    sort_by = request.args.get('sort_by') or 'score'
     # Establish a connection to the database
     conn = get_db_conn()
     # Create a cursor to execute SQL statements
     cursor = conn.cursor()
-    # Execute a SELECT statement to retrieve all rows from the winner table
-    cursor.execute("SELECT * FROM winner")
+    # Execute a SELECT statement to retrieve all rows from the winner table, ordered by the specified column
+    cursor.execute(f"SELECT * FROM winner ORDER BY {sort_by} DESC LIMIT 10")
     # Fetch the result of the query
     winners = cursor.fetchall()
     # Close the cursor and the connection
     cursor.close()
     conn.close()
-
     # Render the game_stats.html template, passing the winners to the template
     return render_template('game_stats.html', winners=winners)
 

@@ -28,11 +28,11 @@
     <table class="table mx-auto table-responsive">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Score</th>
-          <th>Hands Won</th>
-          <th>GINs</th>
-          <th>Undercuts</th>
+          <th><a href="{{ url_for('game_stats', sort_by='name') }}">Name</a></th>
+          <th><a href="{{ url_for('game_stats', sort_by='score') }}">Score</a></th>
+          <th><a href="{{ url_for('game_stats', sort_by='hands_won') }}">Hands Won</a></th>
+          <th><a href="{{ url_for('game_stats', sort_by='num_gins') }}">Gins</a></th>
+          <th><a href="{{ url_for('game_stats', sort_by='num_undercuts') }}">Undercuts</a></th>
         </tr>
       </thead>
       <tbody>
