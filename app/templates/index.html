@@ -48,22 +48,24 @@
         </tbody>
     </table>
     <form action="{{ url_for('update_score') }}" method="post">
-        <label for="winner">Winner:</label>
-        <select id="winner" name="winner">
-            {% for player in session['players'] %}
-            <option value="{{ player.name }}">{{ player.name }}</option>
-            {% endfor %}
-        </select>
-        <label for="points">Points:</label>
-        <input type="number" id="points" name="points" min="1" value="1">
-        <label for="gin_points">+25 GIN:</label>
-        <input type="checkbox" id="gin_points" name="gin_points">
-        <label for="undercut_points">+25 Undercut:</label>
-        <input type="checkbox" id="undercut_points" name="undercut_points">
-        <input type="submit" value="Update Score">
+        <div class="mb-3">
+            <label for="winner">Winner:</label>
+            <select id="winner" name="winner" class="form-select" size=3 aria-label="Default select example">
+                {% for player in session['players'] %}
+                <option value="{{ player.name }}">{{ player.name }}</option>
+                {% endfor %}
+            </select>
+            <label for="points">Points:</label>
+            <input type="number" id="points" name="points" min="1" value="1">
+            <label for="gin_points">+25 GIN:</label>
+            <input type="checkbox" id="gin_points" name="gin_points">
+            <label for="undercut_points">+25 Undercut:</label>
+            <input type="checkbox" id="undercut_points" name="undercut_points">
+            <input type="submit" class="btn btn-primary" value="Update Score">
+        </div>
     </form>
     <form action="{{ url_for('start_over') }}" method="post">
-        <input type="submit" value="Start Over">
+        <input type="submit" class="btn btn-primary" value="Start Over">
     </form>
 </body>
 </html>
