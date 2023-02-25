@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session, url_for, flash
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -56,9 +56,14 @@ def new_game():
     session.clear()
     session['players'] = []
     for i in range(4):
-        player_name = request.form['player' + str(i + 1)]
-        session['players'].append({'name': player_name, 'score': 0, 'hands_won': 0, 'num_gins': 0, 'num_undercuts': 0})
+        player_name = request.form.get('player' + str(i + 1))
+        if player_name:
+            session['players'].append({'name': player_name, 'score': 0, 'hands_won': 0, 'num_gins': 0, 'num_undercuts': 0})
+    if len(session['players']) < 2:
+        flash('Please enter at least two player names.')
+        return redirect(url_for('new_game'))
     return redirect(url_for('home'))
+
 
 
 @app.route('/game_over')

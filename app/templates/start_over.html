@@ -25,16 +25,40 @@
     </nav>
 </head>
 <body>
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
   <h1>New Game!</h1>
     <form action="{{ url_for('new_game') }}" method="post">
-        {% for i in range(4) %}
         <div class="mb-3">
-            <label for="player{{ i+1 }}">Player {{ i+1 }}:</label>
-            <input type="text" class="form-control" placeholder="Player Name" aria-label="Player" id="player{{ i+1 }}" name="player{{ i+1 }}">
+            <label for="player1">Player 1:</label>
+            <input type="text" class="form-control" placeholder="Player Name" aria-label="Player" id="player1" name="player1">
         </div>
-        {% endfor %}
+        <div class="mb-3">
+            <label for="player2">Player 2:</label>
+            <input type="text" class="form-control" placeholder="Player Name" aria-label="Player" id="player2" name="player2">
+        </div>
+        <div id="player3-wrapper" class="mb-3" style="display:none;">
+            <label for="player3">Player 3:</label>
+            <input type="text" class="form-control" placeholder="Player Name" aria-label="Player" id="player3" name="player3">
+        </div>
+        <div id="player4-wrapper" class="mb-3" style="display:none;">
+            <label for="player4">Player 4:</label>
+            <input type="text" class="form-control" placeholder="Player Name" aria-label="Player" id="player4" name="player4">
+        </div>
+        <button id="add-player" class="btn btn-secondary" type="button" style="display:block;">Add Player</button>
         <input type="submit" class="btn btn-primary" value="Start New Game">
     </form>
+
+    <script>
+        let playerCount = 2;
+        let addButton = document.querySelector("#add-player");
+        addButton.addEventListener("click", function() {
+            let playerWrapper = document.querySelector(`#player${playerCount + 1}-wrapper`);
+            playerWrapper.style.display = "block";
+            playerCount++;
+            if (playerCount === 4) {
+                addButton.style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>
