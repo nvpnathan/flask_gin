@@ -2,17 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game Over</title>
+    <title>pyGin - Game Over</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 </head>
 <body>
-  <h1>Game Over</h1>
-  <p>Winner: {{ winner }}, Score: {{ score }}, Hands Won: {{ hands_won }}, Gin: {{ num_gins }}, Undercuts: {{ num_undercuts }}</p>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Gin Rummy Scoreboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('start_over') }}">Start New Game</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('game_stats') }}">Game Stats</a>
+            </li>
+        </ul>
+        </div>
+    </nav>
+    <p>Winner: {{ winner }}, Score: {{ score }}, Hands Won: {{ hands_won }}, Gin: {{ num_gins }}, Undercuts: {{ num_undercuts }}</p>
     <form action="{{ url_for('new_game') }}" method="post">
         {% for i in range(3) %}
         <label for="player{{ i+1 }}">Player {{ i+1 }}:</label>
         <input type="text" id="player{{ i+1 }}" name="player{{ i+1 }}">
         {% endfor %}
-        <input type="submit" value="Start New Game">
+    <input type="submit" class="btn btn-primary" value="Start New Game">
     </form>
 </body>
 </html>

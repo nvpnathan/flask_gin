@@ -28,7 +28,7 @@
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
   <h1>New Game!</h1>
     <form action="{{ url_for('new_game') }}" method="post">
-        {% for i in range(3) %}
+        {% for i in range(4) %}
         <div class="mb-3">
             <label for="player{{ i+1 }}">Player {{ i+1 }}:</label>
             <input type="text" class="form-control" placeholder="Player Name" aria-label="Player" id="player{{ i+1 }}" name="player{{ i+1 }}">

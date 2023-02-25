@@ -20,12 +20,10 @@ app.secret_key = os.environ['SECRET_KEY']  # set a secret key for session
 
 
 @app.route('/')
-def home():
+def home(previous_winner=None):
     if 'players' not in session:
         return render_template('start_over.html')
-        # session['players'] = [{'name': 'player 1', 'score': 0, 'hands_won': 0, 'num_gins': 0},
-          #                    {'name': 'player 2', 'score': 0, 'hands_won': 0, 'num_gins': 0}]
-    return render_template('index.html', players=session['players'])
+    return render_template('index.html', players=session['players'], previous_winner=previous_winner)
 
 
 @app.route('/update_score', methods=['POST'])
@@ -34,6 +32,7 @@ def update_score():
     points = int(request.form['points'])
     gin_points = request.form.get('gin_points')
     undercut_points = request.form.get('undercut_points')
+    previous_winner = winner
     for player in session['players']:
         if player['name'] == winner:
             player['score'] += points
@@ -49,14 +48,14 @@ def update_score():
                 return redirect(url_for('game_over', winner=player['name'], score=player['score'],
                                         hands_won=player['hands_won'], num_gins=player['num_gins'],
                                         num_undercuts=player['num_undercuts']))
-    return redirect(url_for('home'))
+    return redirect(url_for('home', previous_winner=winner))
 
 
 @app.route('/new_game', methods=['POST'])
 def new_game():
     session.clear()
     session['players'] = []
-    for i in range(3):
+    for i in range(4):
         player_name = request.form['player' + str(i + 1)]
         session['players'].append({'name': player_name, 'score': 0, 'hands_won': 0, 'num_gins': 0, 'num_undercuts': 0})
     return redirect(url_for('home'))
@@ -105,7 +104,6 @@ def game_stats():
     conn.close()
     # Render the game_stats.html template, passing the winners to the template
     return render_template('game_stats.html', winners=winners)
-
 
 
 if __name__ == '__main__':
