@@ -65,7 +65,6 @@ def new_game():
     return redirect(url_for('home'))
 
 
-
 @app.route('/game_over')
 def game_over():
     winner = request.args.get('winner')
@@ -73,18 +72,34 @@ def game_over():
     hands_won = request.args.get('hands_won')
     num_gins = request.args.get('num_gins')
     num_undercuts = request.args.get('num_undercuts')
-    # use the conn variable to execute queries
+
+    # Use the conn variable to execute queries
     conn = get_db_conn()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO winner (name, score, hands_won, num_gins, num_undercuts) VALUES (%s, %s, %s, %s, %s)",
-                   (winner, score, hands_won, num_gins, num_undercuts))
+
+    # Check if winner already exists in database
+    cursor.execute("SELECT * FROM winner WHERE name = %s", (winner,))
+    existing_winner = cursor.fetchone()
+
+    if existing_winner:
+        # Update existing winner record
+        cursor.execute("UPDATE winner SET score = %s, hands_won = %s, num_gins = %s, num_undercuts = %s WHERE name = %s",
+                       (score, hands_won, num_gins, num_undercuts, winner))
+    else:
+        # Insert new winner record
+        cursor.execute("INSERT INTO winner (name, score, hands_won, num_gins, num_undercuts) VALUES (%s, %s, %s, %s, %s)",
+                       (winner, score, hands_won, num_gins, num_undercuts))
+
+    # Commit changes to database
     conn.commit()
 
     # Close the connection
     cursor.close()
     conn.close()
+
     return render_template('game_over.html', winner=winner, score=score, hands_won=hands_won,
                            num_gins=num_gins, num_undercuts=num_undercuts)
+
 
 
 @app.route('/start_over', methods=['GET', 'POST'])
