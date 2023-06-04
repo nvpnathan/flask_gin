@@ -19,6 +19,7 @@ cur.execute('CREATE TABLE IF NOT EXISTS player (player_id SERIAL PRIMARY KEY,'
             'score INTEGER NOT NULL,'
             'hands_won INTEGER NOT NULL,'
             'num_gins INTEGER NOT NULL,'
+            'games_won INTEGER DEFAULT 0,'
             'date_added date DEFAULT CURRENT_TIMESTAMP);')
 
 cur.execute('CREATE TABLE IF NOT EXISTS winner (winner_id SERIAL PRIMARY KEY,'
@@ -27,6 +28,7 @@ cur.execute('CREATE TABLE IF NOT EXISTS winner (winner_id SERIAL PRIMARY KEY,'
             'hands_won INTEGER DEFAULT 0,'
             'num_gins INTEGER DEFAULT 0,'
             'num_undercuts INTEGER DEFAULT 0,'
+            'games_won INTEGER DEFAULT 0,'
             'date_added date DEFAULT CURRENT_TIMESTAMP);')
 
 conn.commit()

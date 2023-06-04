@@ -17,7 +17,8 @@ def get_db_conn():
 
 app = Flask(__name__)
 app.secret_key = os.environ['SECRET_KEY']  # set a secret key for session
-
+# admin = Admin(app, template_mode='bootstrap3')
+# admin.add_view(admin_view.WinnerView(name='Winners'))
 
 @app.route('/')
 def home(previous_winner=None):
@@ -32,7 +33,6 @@ def update_score():
     points = int(request.form['points'])
     gin_points = request.form.get('gin_points')
     undercut_points = request.form.get('undercut_points')
-    previous_winner = winner
     for player in session['players']:
         if player['name'] == winner:
             player['score'] += points
@@ -58,7 +58,8 @@ def new_game():
     for i in range(4):
         player_name = request.form.get('player' + str(i + 1))
         if player_name:
-            session['players'].append({'name': player_name, 'score': 0, 'hands_won': 0, 'num_gins': 0, 'num_undercuts': 0})
+            session['players'].append({'name': player_name, 'score': 0, 'hands_won': 0, 'num_gins': 0,
+                                       'num_undercuts': 0, 'games_won': 0})
     if len(session['players']) < 2:
         flash('Please enter at least two player names.')
         return redirect(url_for('new_game'))
@@ -72,7 +73,6 @@ def game_over():
     hands_won = request.args.get('hands_won')
     num_gins = request.args.get('num_gins')
     num_undercuts = request.args.get('num_undercuts')
-
     # Use the conn variable to execute queries
     conn = get_db_conn()
     cursor = conn.cursor()
@@ -83,12 +83,22 @@ def game_over():
 
     if existing_winner:
         # Update existing winner record
-        cursor.execute("UPDATE winner SET score = %s, hands_won = %s, num_gins = %s, num_undercuts = %s WHERE name = %s",
-                       (score, hands_won, num_gins, num_undercuts, winner))
+        updated_score = existing_winner[2] + int(score)  # Add the existing score to the new score
+        updated_hands_won = existing_winner[3] + int(hands_won)  # Add the existing hands_won to the new hands_won
+        updated_num_gins = existing_winner[4] + int(num_gins)  # Add the existing num_gins to the new num_gins
+        updated_num_undercuts = existing_winner[
+                                    5] + int(num_undercuts)  # Add the existing num_undercuts to the new num_undercuts
+        games_won = existing_winner[6] + 1
+        cursor.execute(
+            "UPDATE winner SET score = %s, hands_won = %s, num_gins = %s, num_undercuts = %s, games_won = %s "
+            "WHERE name = %s",
+            (updated_score, updated_hands_won, updated_num_gins, updated_num_undercuts, games_won, winner))
     else:
         # Insert new winner record
-        cursor.execute("INSERT INTO winner (name, score, hands_won, num_gins, num_undercuts) VALUES (%s, %s, %s, %s, %s)",
-                       (winner, score, hands_won, num_gins, num_undercuts))
+        games_won = 1
+        cursor.execute("INSERT INTO winner (name, score, hands_won, num_gins, num_undercuts, games_won) "
+                       "VALUES (%s, %s, %s, %s, %s, %s)",
+                       (winner, score, hands_won, num_gins, num_undercuts, games_won))
 
     # Commit changes to database
     conn.commit()
