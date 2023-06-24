@@ -107,9 +107,10 @@ def game_over():
     cursor.close()
     conn.close()
 
+    session.clear()
+
     return render_template('game_over.html', winner=winner, score=score, hands_won=hands_won,
                            num_gins=num_gins, num_undercuts=num_undercuts)
-
 
 
 @app.route('/start_over', methods=['GET', 'POST'])
